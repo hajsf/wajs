@@ -1,0 +1,49 @@
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+</head>
+
+<body>
+  <h5>Server message/Code: <span id="message"></span></h5>
+  <div id="qr"></div>
+  <script>
+    var source = new EventSource("http://localhost:1234/sse/dashboard");
+    source.onmessage = function (event) {
+        var message = event.data
+        document.querySelector('#message').innerHTML = message;
+        if (new String(message).valueOf() == "success" || new String(message).valueOf() == "timeout"
+            || new String(message).valueOf() == "Already logged") {
+            document.querySelector('#qr').innerHTML = "";
+        } else {
+            var qrcode = new QRCode("qr", {
+                text: message,
+                width: 128,
+                height: 128,
+                colorDark : "#000000",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.M
+            });
+        }
+    }
+
+/*
+    var qrcode = new QRCode(
+    "qr",
+        [
+            "BEGIN:VCARD",
+            "VERSION:2.1",
+            "N:Doe;John;;Dr;",
+            "FN:Dr. John Doe",
+            "EMAIL:johndoe@hotmail.com",
+            "TEL;TYPE=cell:(123) 555-5832",
+            "END:VCARD"
+        ].join("\r\n")
+    ); */
+    
+
+  </script>
+</body>
+</html>
